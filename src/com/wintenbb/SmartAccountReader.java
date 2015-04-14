@@ -32,6 +32,8 @@ public class SmartAccountReader {
 	public static void main(String[] args) {
 		SmartAccountReader reader = null;
 		try {
+			int count = 0;
+			System.out.println("SmartAccountReader running ");
 			for (File file : new File(INPUT_FOLDER).listFiles()) {
 				Matcher m = FILE_DATE.matcher(file.getName());
 				if (m.find()) {
@@ -44,12 +46,14 @@ public class SmartAccountReader {
 						} else {
 							System.err.println("Error in " + file);
 						}
+						count++;
 					}
 				} else {
 					System.err.println("parsing error filename" + file);
 				}
 
 			}
+			System.out.println("SmartAccountReader treat " + count + " files");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
