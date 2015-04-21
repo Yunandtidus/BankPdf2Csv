@@ -3,19 +3,37 @@ package com.wintenbb;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class Extrait {
-	private Map<String, Compte> comptes = new TreeMap<String, Compte>();
+/**
+ * This is the class containing all accounts defined in the PDF
+ * 
+ * @author Yunandtidus
+ *
+ */
+public class AccountsStatement {
 
-	public Map<String, Compte> getComptes() {
-		return comptes;
+	/**
+	 * The accounts
+	 */
+	private Map<String, Account> accounts = new TreeMap<String, Account>();
+
+	/**
+	 * 
+	 * @return the accounts
+	 */
+	public Map<String, Account> getAccounts() {
+		return accounts;
 	}
 
-	public void setComptes(Map<String, Compte> comptes) {
-		this.comptes = comptes;
+	/**
+	 * 
+	 * @param accounts
+	 */
+	public void setAccounts(Map<String, Account> accounts) {
+		this.accounts = accounts;
 	}
 
 	@Override
 	public String toString() {
-		return comptes.toString();
+		return accounts.toString();
 	}
 }

@@ -4,61 +4,139 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Compte {
+/**
+ * The class <code>Account</code> represents the state of an account for a given
+ * PDF it contains :
+ * <ul>
+ * <li>the account name</li>
+ * <li>the account number</li>
+ * <li>the initial solde</li>
+ * <li>the final solde</li>
+ * <li>the lines</li>
+ * </ul>
+ * 
+ * @author Yunandtidus
+ *
+ */
+public class Account {
 
+	/**
+	 * The account's name
+	 */
 	private String accountName = null;
+
+	/**
+	 * The account's number
+	 */
 	private String accountNumber = null;
-	private BigDecimal soldeInitial = null;
-	private BigDecimal soldeFinal = null;
-	private List<Line> lines = new ArrayList<Line>();
 
-	public String getAccountNumber() {
-		return accountNumber;
-	}
+	/**
+	 * The account's initial balance
+	 */
+	private BigDecimal initialBalance = null;
 
-	public void setAccountNumber(String accountNumber) {
-		this.accountNumber = accountNumber;
-	}
+	/**
+	 * The account's final balance
+	 */
+	private BigDecimal finalBalance = null;
 
+	/**
+	 * The account's lines for this PDF
+	 */
+	private List<AccountLine> lines = new ArrayList<AccountLine>();
+
+	/**
+	 * @return the accountName
+	 */
 	public String getAccountName() {
 		return accountName;
 	}
 
+	/**
+	 * @param accountName
+	 *            the accountName to set
+	 */
 	public void setAccountName(String accountName) {
 		this.accountName = accountName;
 	}
 
-	public BigDecimal getSoldeInitial() {
-		return soldeInitial;
+	/**
+	 * @return the accountNumber
+	 */
+	public String getAccountNumber() {
+		return accountNumber;
 	}
 
-	public void setSoldeInitial(BigDecimal soldeInitial) {
-		this.soldeInitial = soldeInitial;
+	/**
+	 * @param accountNumber
+	 *            the accountNumber to set
+	 */
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
 	}
 
-	public BigDecimal getSoldeFinal() {
-		return soldeFinal;
+	/**
+	 * @return the soldeInitial
+	 */
+	public BigDecimal getInitialBalance() {
+		return initialBalance;
 	}
 
-	public void setSoldeFinal(BigDecimal soldeFinal) {
-		this.soldeFinal = soldeFinal;
+	/**
+	 * @param soldeInitial
+	 *            the soldeInitial to set
+	 */
+	public void setInitialBalance(BigDecimal initialBalance) {
+		this.initialBalance = initialBalance;
 	}
 
-	public List<Line> getLines() {
+	/**
+	 * @return the soldeFinal
+	 */
+	public BigDecimal getFinalBalance() {
+		return finalBalance;
+	}
+
+	/**
+	 * @param soldeFinal
+	 *            the soldeFinal to set
+	 */
+	public void setFinalBalance(BigDecimal finalBalance) {
+		this.finalBalance = finalBalance;
+	}
+
+	/**
+	 * @return the lines
+	 */
+	public List<AccountLine> getLines() {
 		return lines;
 	}
 
-	public void setLines(List<Line> lines) {
+	/**
+	 * @param lines
+	 *            the lines to set
+	 */
+	public void setLines(List<AccountLine> lines) {
 		this.lines = lines;
 	}
 
-	public void addLine(Line l) {
+	/**
+	 * Helper method for adding a line
+	 * 
+	 * @param l
+	 */
+	public void addLine(AccountLine l) {
 		if (l != null && !l.isEmpty()) {
 			lines.add(l);
 		}
 	}
 
-	public Line getLastLine() {
+	/**
+	 * Helper method to get the last line
+	 * 
+	 * @return the last account line
+	 */
+	public AccountLine getLastLine() {
 		return lines.get(lines.size() - 1);
 	}
 
@@ -66,6 +144,6 @@ public class Compte {
 	public String toString() {
 		return String
 				.format("Compte [soldeInitial = %s, soldeFinal = %s, lines = \n %s]\n",
-						soldeInitial, soldeFinal, lines);
+						initialBalance, finalBalance, lines);
 	}
 }

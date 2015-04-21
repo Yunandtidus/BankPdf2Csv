@@ -62,27 +62,27 @@ public class SmartAccountReader {
 	public void export() throws IOException {
 		FileWriter w = new FileWriter(new File(OUTPUT_FOLDER + date + ".csv"));
 		System.out.println("Exporting " + date + ".csv");
-		for (String accountName : extrait.getComptes().keySet()) {
-			Compte c = extrait.getComptes().get(accountName);
+		for (String accountName : extrait.getAccounts().keySet()) {
+			Account c = extrait.getAccounts().get(accountName);
 
-			w.append(c.getAccountName() + " N° " + c.getAccountNumber() + ";;;;Solde initial;" + c.getSoldeInitial()
+			w.append(c.getAccountName() + " N° " + c.getAccountNumber() + ";;;;Solde initial;" + c.getInitialBalance()
 					+ "\n");
 
 			if (!c.getLines().isEmpty()) {
 				w.append("Date;Date valeur;Libellé;Débit;Crédit; \n");
 			}
-			for (Line l : c.getLines()) {
+			for (AccountLine l : c.getLines()) {
 				w.append(l.getBeginDate() + ";" + l.getValueDate() + ";" + l.getLabel() + " " + l.getLabel2() + ";"
 						+ l.getDebit() + ";" + l.getCredit() + ";;" + lineType(l) + "\n");
 			}
-			w.append(";;;;Solde final;" + c.getSoldeFinal() + "\n");
+			w.append(";;;;Solde final;" + c.getFinalBalance() + "\n");
 
 			w.append("\n");
 		}
 		w.close();
 	}
 
-	public String lineType(Line l) {
+	public String lineType(AccountLine l) {
 		// return
 		// ";logement;Voiture;Loisirs;Nourriture;Santé;Divers;Impots;Banque;Revenus";
 		if (l.getLabel().contains("PRLV NVO ")) {
@@ -139,8 +139,8 @@ public class SmartAccountReader {
 	public boolean treat() throws IOException {
 		try {
 
-			extrait = new Extrait();
-			Compte currAccount = null;
+			extrait = new AccountsStatement();
+			Account currAccount = null;
 			String currentAccountName = null;
 			boolean lastReadWasLine = false;
 			while (!finished) {
@@ -156,44 +156,44 @@ public class SmartAccountReader {
 				Matcher m;
 				if ((m = ACCOUNT_PATTERN.matcher(lastLine)).find()) {
 					currentAccountName = m.group(2).trim();
-					if (!extrait.getComptes().containsKey(currentAccountName)) {
-						currAccount = new Compte();
+					if (!extrait.getAccounts().containsKey(currentAccountName)) {
+						currAccount = new Account();
 						currAccount.setAccountName(m.group(1));
 						currAccount.setAccountNumber(currentAccountName);
-						extrait.getComptes().put(currentAccountName, currAccount);
+						extrait.getAccounts().put(currentAccountName, currAccount);
 					} else {
-						currAccount = extrait.getComptes().get(currentAccountName);
+						currAccount = extrait.getAccounts().get(currentAccountName);
 					}
 					lastReadWasLine = false;
 				} else if ((m = SOLDE_CREDITEUR_PATTERN.matcher(lastLine)).find()) {
-					if (currAccount.getSoldeInitial() == null) {
-						currAccount.setSoldeInitial(new BigDecimal(m.group(1).replaceAll("\\.", "")
+					if (currAccount.getInitialBalance() == null) {
+						currAccount.setInitialBalance(new BigDecimal(m.group(1).replaceAll("\\.", "")
 								.replace(",", ".")));
 					} else {
-						currAccount.setSoldeFinal(new BigDecimal(m.group(1).replaceAll("\\.", "")
+						currAccount.setFinalBalance(new BigDecimal(m.group(1).replaceAll("\\.", "")
 								.replace(",", ".")));
 					}
 					lastReadWasLine = false;
 				} else if ((m = SOLDE_NUL_PATTERN.matcher(lastLine)).find()) {
-					if (currAccount.getSoldeInitial() == null) {
-						currAccount.setSoldeInitial(BigDecimal.ZERO);
+					if (currAccount.getInitialBalance() == null) {
+						currAccount.setInitialBalance(BigDecimal.ZERO);
 					} else {
-						currAccount.setSoldeFinal(BigDecimal.ZERO);
+						currAccount.setFinalBalance(BigDecimal.ZERO);
 					}
 					lastReadWasLine = false;
 				} else if ((m = SITUATION_OTHER_ACCOUNT.matcher(lastLine)).find()) {
 					currentAccountName = m.group(1).trim();
-					if (!extrait.getComptes().containsKey(currentAccountName)) {
-						currAccount = new Compte();
+					if (!extrait.getAccounts().containsKey(currentAccountName)) {
+						currAccount = new Account();
 						currAccount.setAccountNumber(currentAccountName);
 						currAccount.setAccountName(m.group(2));
-						extrait.getComptes().put(currentAccountName, currAccount);
+						extrait.getAccounts().put(currentAccountName, currAccount);
 					}
 					System.out.println(m.group(3));
 					BigDecimal solde = new BigDecimal(m.group(3).replaceAll("\\.", "")
 							.replace(",", "."));
-					currAccount.setSoldeInitial(solde);
-					currAccount.setSoldeFinal(solde);
+					currAccount.setInitialBalance(solde);
+					currAccount.setFinalBalance(solde);
 					lastReadWasLine = false;
 				} else if ((m = LINE_PATTERN.matcher(lastLine)).find()) {
 					currAccount.addLine(parseLine());
@@ -210,6 +210,7 @@ public class SmartAccountReader {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public SmartAccountReader(File file, String date) throws FileNotFoundException, IOException {
 		this.date = date;
 		PDFParser parser = new PDFParser(new FileInputStream(file));
@@ -219,10 +220,10 @@ public class SmartAccountReader {
 		allPages = doc.getDocumentCatalog().getAllPages();
 		currPage = allPages.get(page);
 
-		parserConf = new ParserConfig();
+		parserConf = ParserConfig.CIC;
 	}
 
-	Extrait extrait;
+	AccountsStatement extrait;
 	String date;
 	ParserConfig parserConf;
 	PDDocument doc;
@@ -238,7 +239,7 @@ public class SmartAccountReader {
 
 	boolean finished = false;
 
-	public Line parseLine() throws IOException {
+	public AccountLine parseLine() throws IOException {
 		PageConfig pc = parserConf.configs.get(lastPage % 2);
 		PDFTextStripperByArea stripper = new PDFTextStripperByArea();
 		stripper.setSortByPosition(true);
@@ -249,7 +250,7 @@ public class SmartAccountReader {
 			xOffset += pc.widths[i];
 		}
 		stripper.extractRegions(currPage);
-		Line l = new Line();
+		AccountLine l = new AccountLine();
 		l.setBeginDate(stripper.getTextForRegion("page" + page + "col0"));
 		l.setValueDate(stripper.getTextForRegion("page" + page + "col1"));
 		l.setLabel(stripper
@@ -291,19 +292,19 @@ public class SmartAccountReader {
 		}
 	}
 
-	public boolean check(Extrait extrait) {
+	public boolean check(AccountsStatement extrait) {
 		boolean match = true;
-		for (String accountName : extrait.getComptes().keySet()) {
-			Compte c = extrait.getComptes().get(accountName);
-			BigDecimal solde = c.getSoldeInitial();
-			for (Line l : c.getLines()) {
+		for (String accountName : extrait.getAccounts().keySet()) {
+			Account c = extrait.getAccounts().get(accountName);
+			BigDecimal solde = c.getInitialBalance();
+			for (AccountLine l : c.getLines()) {
 				if (!l.getDebit().isEmpty()) {
 					solde = solde.subtract(new BigDecimal(l.getDebit()));
 				} else if (!l.getCredit().isEmpty()) {
 					solde = solde.add(new BigDecimal(l.getCredit()));
 				}
 			}
-			if (solde.compareTo(c.getSoldeFinal()) != 0) {
+			if (solde.compareTo(c.getFinalBalance()) != 0) {
 				System.err.println("Incohérence sur le compte " + accountName + ", computed = " + solde);
 				System.err.println(c);
 				match = false;

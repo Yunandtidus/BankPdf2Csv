@@ -1,6 +1,20 @@
 package com.wintenbb;
 
-public class Line {
+/**
+ * Account line, contains :
+ * <ul>
+ * <li>beginDate</li>
+ * <li>valueDate</li>
+ * <li>label</li>
+ * <li>label2</li>
+ * <li>debit</li>
+ * <li>credit</li>
+ * </ul>
+ * 
+ * @author Yunandtidus
+ *
+ */
+public class AccountLine {
 	private String beginDate;
 	private String valueDate;
 	private String label;
