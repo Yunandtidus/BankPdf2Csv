@@ -18,20 +18,24 @@ public class PageConfig {
 	public int yOffset;
 
 	/**
-	 * the line height
+	 * the line's height
 	 */
 	public int lineHeight;
 
 	/**
-	 * the column width
+	 * the columns' width
 	 */
 	public int[] widths;
 
 	/**
 	 * @param xOffset
+	 *            x offset
 	 * @param yOffset
+	 *            y offset
 	 * @param lineHeight
+	 *            line's height
 	 * @param widths
+	 *            columns' width
 	 */
 	public PageConfig(int xOffset, int yOffset, int lineHeight, int[] widths) {
 		super();

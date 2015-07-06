@@ -19,7 +19,7 @@ import org.apache.pdfbox.util.PDFTextStripperByArea;
 public class SmartAccountReader {
 
 	public static final Pattern FILE_DATE = Pattern.compile(".*(\\d{4}-\\d{2}-\\d{2})\\.pdf");
-	public static final Pattern ACCOUNT_PATTERN = Pattern.compile("([\\w\\s]+) N° (\\d+)");
+	public static final Pattern ACCOUNT_PATTERN = Pattern.compile("([\\w\\s]+) NÂ° (\\d+)");
 	public static final Pattern LINE_PATTERN = Pattern.compile("^(\\d{2}/\\d{2}/\\d{4}) .*");
 	public static final Pattern SOLDE_NUL_PATTERN = Pattern.compile("SOLDE NUL");
 	public static final Pattern SOLDE_CREDITEUR_PATTERN = Pattern.compile("SOLDE CREDITEUR .*/\\d{4} *([-\\.,\\d]+)");
@@ -65,11 +65,11 @@ public class SmartAccountReader {
 		for (String accountName : extrait.getAccounts().keySet()) {
 			Account c = extrait.getAccounts().get(accountName);
 
-			w.append(c.getAccountName() + " N° " + c.getAccountNumber() + ";;;;Solde initial;" + c.getInitialBalance()
+			w.append(c.getAccountName() + " NÂ° " + c.getAccountNumber() + ";;;;Solde initial;" + c.getInitialBalance()
 					+ "\n");
 
 			if (!c.getLines().isEmpty()) {
-				w.append("Date;Date valeur;Libellé;Débit;Crédit; \n");
+				w.append("Date;Date valeur;LibellÃ©;DÃ©bit;CrÃ©dit; \n");
 			}
 			for (AccountLine l : c.getLines()) {
 				w.append(l.getBeginDate() + ";" + l.getValueDate() + ";" + l.getLabel() + " " + l.getLabel2() + ";"
@@ -84,21 +84,21 @@ public class SmartAccountReader {
 
 	public String lineType(AccountLine l) {
 		// return
-		// ";logement;Voiture;Loisirs;Nourriture;Santé;Divers;Impots;Banque;Revenus";
+		// ";logement;Voiture;Loisirs;Nourriture;SantÃ©;Divers;Impots;Banque;Revenus";
 		if (l.getLabel().contains("PRLV NVO ")) {
 			return ";Loyer;;;;;;;;";
 		} else if (l.getFullLabel().contains(" CENTURY 21 ")) {
 			return ";Loyer;;;;;;;;";
 		} else if (l.getFullLabel().contains(" EDF ")) {
-			return ";Electricité;;;;;;;;";
+			return ";ElectricitÃ©;;;;;;;;";
 		} else if (l.getFullLabel().contains(" FREE HAUTDEBIT ")) {
 			return ";Internet;;;;;;;;";
 		} else if (l.getFullLabel().contains(" FREE MOBILE")) {
-			return ";Téléphone;;;;;;;;";
+			return ";TÃ©lÃ©phone;;;;;;;;";
 		} else if (l.getFullLabel().contains(" APRR ")) {
-			return ";;Péage;;;;;;;";
+			return ";;PÃ©age;;;;;;;";
 		} else if (l.getFullLabel().contains(" PARIS RHIN RH ")) {
-			return ";;Péage;;;;;;;";
+			return ";;PÃ©age;;;;;;;";
 		} else if (l.getFullLabel().contains(" S/S ")) {
 			return ";;Essence;;;;;;;";
 		} else if (l.getFullLabel().contains(" CARBURANT ")) {
@@ -305,7 +305,7 @@ public class SmartAccountReader {
 				}
 			}
 			if (solde.compareTo(c.getFinalBalance()) != 0) {
-				System.err.println("Incohérence sur le compte " + accountName + ", computed = " + solde);
+				System.err.println("IncohÃ©rence sur le compte " + accountName + ", computed = " + solde);
 				System.err.println(c);
 				match = false;
 			}
