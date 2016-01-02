@@ -115,9 +115,9 @@ public class SmartAccountReader {
 		} else if (l.getFullLabel().contains(" IMPOT ")) {
 			return ";;;;;;;Impots;;";
 		} else if (l.getFullLabel().contains("F COTIS ")) {
-			return ";;;;;;;;Banque;";
+			return ";;;;;;;;Frais banquaires;";
 		} else if (l.getFullLabel().contains("ECH PRET ")) {
-			return ";;;;;;;;Banque;";
+			return ";;;;;;;;Frais banquaires;";
 		} else if (l.getFullLabel().contains(" SYSBELF ")) {
 			return ";;;;;;;;;Paye";
 		} else if (l.getFullLabel().contains(" DECATHLON ")) {
