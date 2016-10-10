@@ -18,7 +18,7 @@ import org.apache.pdfbox.util.PDFTextStripperByArea;
 
 public class SmartAccountReader {
 
-	public static final Pattern FILE_DATE = Pattern.compile(".*(\\d{4}-\\d{2}-\\d{2})\\.pdf");
+	public static final Pattern FILE_DATE = Pattern.compile(".*(\\d{4}-\\d{2}-\\d{2}(-\\d{1})?)\\.pdf");
 	public static final Pattern ACCOUNT_PATTERN = Pattern.compile("([\\w\\s]+) N° (\\d+)");
 	public static final Pattern LINE_PATTERN = Pattern.compile("^(\\d{2}/\\d{2}/\\d{4}) .*");
 	public static final Pattern SOLDE_NUL_PATTERN = Pattern.compile("SOLDE NUL");
@@ -26,8 +26,8 @@ public class SmartAccountReader {
 	public static final Pattern LINE_COMPLEMENTARY_PATTERN = Pattern.compile(".+");
 	public static final Pattern SITUATION_OTHER_ACCOUNT = Pattern.compile("(\\d{8,12}) *(.*) * EUR *(.*)");
 
-	public static final String OUTPUT_FOLDER = "C:/Users/Yunandtidus/Desktop/Travail/Comptes/output/";
-	public static final String INPUT_FOLDER = "C:/Users/Yunandtidus/Desktop/Travail/Comptes/input/";
+	public static final String OUTPUT_FOLDER = "D:/Yunandtidus/Travail/Travail/Comptes/output/";
+	public static final String INPUT_FOLDER = "D:/Yunandtidus/Travail/Travail/Comptes/input/";
 
 	public static void main(String[] args) {
 		SmartAccountReader reader = null;
@@ -167,11 +167,10 @@ public class SmartAccountReader {
 					lastReadWasLine = false;
 				} else if ((m = SOLDE_CREDITEUR_PATTERN.matcher(lastLine)).find()) {
 					if (currAccount.getInitialBalance() == null) {
-						currAccount.setInitialBalance(new BigDecimal(m.group(1).replaceAll("\\.", "")
-								.replace(",", ".")));
+						currAccount
+								.setInitialBalance(new BigDecimal(m.group(1).replaceAll("\\.", "").replace(",", ".")));
 					} else {
-						currAccount.setFinalBalance(new BigDecimal(m.group(1).replaceAll("\\.", "")
-								.replace(",", ".")));
+						currAccount.setFinalBalance(new BigDecimal(m.group(1).replaceAll("\\.", "").replace(",", ".")));
 					}
 					lastReadWasLine = false;
 				} else if ((m = SOLDE_NUL_PATTERN.matcher(lastLine)).find()) {
@@ -190,8 +189,7 @@ public class SmartAccountReader {
 						extrait.getAccounts().put(currentAccountName, currAccount);
 					}
 					System.out.println(m.group(3));
-					BigDecimal solde = new BigDecimal(m.group(3).replaceAll("\\.", "")
-							.replace(",", "."));
+					BigDecimal solde = new BigDecimal(m.group(3).replaceAll("\\.", "").replace(",", "."));
 					currAccount.setInitialBalance(solde);
 					currAccount.setFinalBalance(solde);
 					lastReadWasLine = false;
@@ -253,18 +251,15 @@ public class SmartAccountReader {
 		AccountLine l = new AccountLine();
 		l.setBeginDate(stripper.getTextForRegion("page" + page + "col0"));
 		l.setValueDate(stripper.getTextForRegion("page" + page + "col1"));
-		l.setLabel(stripper
-				.getTextForRegion("page" + page + "col2"));
-		l.setDebit(stripper
-				.getTextForRegion("page" + page + "col3"));
+		l.setLabel(stripper.getTextForRegion("page" + page + "col2"));
+		l.setDebit(stripper.getTextForRegion("page" + page + "col3"));
 		l.setCredit(stripper.getTextForRegion("page" + page + "col4"));
 		return l;
 	}
 
 	public void readNextLine() throws IOException {
 		int height = 1;
-		while ((readText == null || readText.matches("\r\n"))
-				&& height + yOffset < 1200) {
+		while ((readText == null || readText.matches("\r\n")) && height + yOffset < 1200) {
 			PDFTextStripperByArea stripper = new PDFTextStripperByArea();
 			stripper.setSortByPosition(true);
 			Rectangle rect1 = new Rectangle(40, yOffset, 520, height);
