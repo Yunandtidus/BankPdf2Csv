@@ -1,4 +1,4 @@
-package com.wintenbb;
+package com.wintenbb.bankManager.domain;
 
 /**
  * Account line, contains :
@@ -24,9 +24,9 @@ public class AccountLine {
 
 	@Override
 	public String toString() {
-		return String
-				.format("Line [beginDate = %10s, valueDate = %10s, label = %30s # %30s, debit = %10s, credit = %10s]\n",
-						beginDate, valueDate, label, label2, debit, credit);
+		return String.format(
+				"Line [beginDate = %10s, valueDate = %10s, label = %30s # %30s, debit = %10s, credit = %10s]\n",
+				beginDate, valueDate, label, label2, debit, credit);
 	}
 
 	public boolean isEmpty() {
@@ -82,6 +82,9 @@ public class AccountLine {
 	}
 
 	public String getFullLabel() {
+		if (label2 == null || label2.isEmpty()) {
+			return label;
+		}
 		return getLabel() + " " + getLabel2();
 	}
 

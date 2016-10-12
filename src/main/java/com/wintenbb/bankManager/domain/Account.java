@@ -1,4 +1,4 @@
-package com.wintenbb;
+package com.wintenbb.bankManager.domain;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

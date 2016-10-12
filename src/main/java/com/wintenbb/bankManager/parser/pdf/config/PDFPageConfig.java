@@ -1,4 +1,4 @@
-package com.wintenbb;
+package com.wintenbb.bankManager.parser.pdf.config;
 
 /**
  * Pixel offset line height and columns widths in order to parse a PDF table
@@ -6,7 +6,7 @@ package com.wintenbb;
  * @author Yunandtidus
  *
  */
-public class PageConfig {
+public class PDFPageConfig {
 	/**
 	 * the x offset
 	 */
@@ -37,7 +37,7 @@ public class PageConfig {
 	 * @param widths
 	 *            columns' width
 	 */
-	public PageConfig(int xOffset, int yOffset, int lineHeight, int[] widths) {
+	public PDFPageConfig(int xOffset, int yOffset, int lineHeight, int[] widths) {
 		super();
 		this.xOffset = xOffset;
 		this.yOffset = yOffset;

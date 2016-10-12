@@ -1,4 +1,4 @@
-package com.wintenbb;
+package com.wintenbb.bankManager.parser.pdf.config;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,11 +13,11 @@ import java.util.List;
  * @author Yunandtidus
  *
  */
-public enum ParserConfig {
+public enum PDFParserConfig {
 	CIC(Arrays.asList(
-			new PageConfig(52, 394, 11, new int[] { 42, 43, 250, 80, 80 }),
-			new PageConfig(61, 144, 11, new int[] { 42, 43, 250, 80, 80 }),
-			new PageConfig(52, 196, 11, new int[] { 42, 43, 250, 80, 80 })
+			new PDFPageConfig(52, 394, 11, new int[] { 42, 43, 250, 80, 80 }),
+			new PDFPageConfig(61, 144, 11, new int[] { 42, 43, 250, 80, 80 }),
+			new PDFPageConfig(52, 196, 11, new int[] { 42, 43, 250, 80, 80 })
 			));
 
 	/**
@@ -25,14 +25,14 @@ public enum ParserConfig {
 	 * and first page are then used alternatively to parse respectively even and
 	 * odd pages
 	 */
-	public List<PageConfig> configs;
+	public List<PDFPageConfig> configs;
 
 	/**
 	 * Constructor
 	 * 
 	 * @param configs
 	 */
-	private ParserConfig(List<PageConfig> configs) {
+	private PDFParserConfig(List<PDFPageConfig> configs) {
 		this.configs = configs;
 	}
 

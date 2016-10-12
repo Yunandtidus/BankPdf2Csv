@@ -1,4 +1,4 @@
-package com.wintenbb;
+package com.wintenbb.bankManager.domain;
 
 import java.util.Map;
 import java.util.TreeMap;
