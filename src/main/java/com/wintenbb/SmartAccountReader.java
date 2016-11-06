@@ -64,6 +64,7 @@ public class SmartAccountReader {
 		System.out.println("Exporting " + date + ".csv");
 		for (String accountName : extrait.getAccounts().keySet()) {
 			Account c = extrait.getAccounts().get(accountName);
+			System.out.println(c.getAccountName());
 
 			w.append(c.getAccountName() + " N° " + c.getAccountNumber() + ";;;;Solde initial;" + c.getInitialBalance()
 					+ "\n");
