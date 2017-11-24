@@ -14,17 +14,9 @@ import com.wintenbb.bankManager.properties.PropertyManager;
 
 public class SmartAccountReader {
 
-	public static final Pattern FILE_DATE = Pattern.compile(".*(\\d{4}-\\d{2}-\\d{2}(-\\d{1})?)\\.pdf");
-	public static final Pattern SITUATION_OTHER_ACCOUNT = Pattern.compile("(\\d{8,12}) *(.*) * EUR *(.*)");
-
-	private String date;
-
-	public SmartAccountReader(String date) {
-		this.date = date;
-	}
+	private static final Pattern FILE_DATE = Pattern.compile(".*(\\d{4}-\\d{2}-\\d{2}(-\\d)?)\\.pdf");
 
 	public static void main(String[] args) {
-		SmartAccountReader reader = null;
 		try {
 			int count = 0;
 			System.out.println("SmartAccountReader running ");
@@ -33,7 +25,6 @@ public class SmartAccountReader {
 				if (m.find()) {
 					String date = m.group(1);
 					if (!new File(PropertyManager.OUTPUT_FOLDER + date + ".csv").exists()) {
-						reader = new SmartAccountReader(date);
 						System.out.println("Treating " + file.getName());
 						AccountsStatement extrait = new PDFParser(new FileInputStream(file), PDFParserConfig.CIC)
 								.treat();

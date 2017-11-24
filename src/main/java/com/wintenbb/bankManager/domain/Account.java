@@ -14,7 +14,7 @@ import java.util.List;
  * <li>the final solde</li>
  * <li>the lines</li>
  * </ul>
- * 
+ *
  * @author Yunandtidus
  *
  */
@@ -43,7 +43,7 @@ public class Account {
 	/**
 	 * The account's lines for this PDF
 	 */
-	private List<AccountLine> lines = new ArrayList<AccountLine>();
+	private List<AccountLine> lines = new ArrayList<>();
 
 	/**
 	 * @return the accountName
@@ -76,30 +76,30 @@ public class Account {
 	}
 
 	/**
-	 * @return the soldeInitial
+	 * @return the initialBalance
 	 */
 	public BigDecimal getInitialBalance() {
 		return initialBalance;
 	}
 
 	/**
-	 * @param soldeInitial
-	 *            the soldeInitial to set
+	 * @param initialBalance
+	 *            the initialBalance to set
 	 */
 	public void setInitialBalance(BigDecimal initialBalance) {
 		this.initialBalance = initialBalance;
 	}
 
 	/**
-	 * @return the soldeFinal
+	 * @return the finalBalance
 	 */
 	public BigDecimal getFinalBalance() {
 		return finalBalance;
 	}
 
 	/**
-	 * @param soldeFinal
-	 *            the soldeFinal to set
+	 * @param finalBalance
+	 *            the finalBalance to set
 	 */
 	public void setFinalBalance(BigDecimal finalBalance) {
 		this.finalBalance = finalBalance;
@@ -122,8 +122,9 @@ public class Account {
 
 	/**
 	 * Helper method for adding a line
-	 * 
+	 *
 	 * @param l
+	 *            line
 	 */
 	public void addLine(AccountLine l) {
 		if (l != null && !l.isEmpty()) {
@@ -133,7 +134,7 @@ public class Account {
 
 	/**
 	 * Helper method to get the last line
-	 * 
+	 *
 	 * @return the last account line
 	 */
 	public AccountLine getLastLine() {
@@ -142,8 +143,7 @@ public class Account {
 
 	@Override
 	public String toString() {
-		return String
-				.format("Compte [soldeInitial = %s, soldeFinal = %s, lines = \n %s]\n",
-						initialBalance, finalBalance, lines);
+		return String.format("Compte [soldeInitial = %s, soldeFinal = %s, lines = \n %s]\n", initialBalance,
+				finalBalance, lines);
 	}
 }

@@ -13,6 +13,7 @@ import com.wintenbb.bankManager.properties.PropertyManager;
 
 public class CSVExporter implements Exporter {
 
+	@Override
 	public void export(AccountsStatement extrait, String date) throws IOException {
 		FileWriter w = new FileWriter(new File(PropertyManager.OUTPUT_FOLDER + date + ".csv"));
 		System.out.println("Exporting " + date + ".csv");
@@ -20,21 +21,21 @@ public class CSVExporter implements Exporter {
 			Account c = extrait.getAccounts().get(accountName);
 			System.out.println(c.getAccountName());
 
-			w.append(c.getAccountName() + " N° " + c.getAccountNumber() + ";;;;Solde initial;" + c.getInitialBalance()
-					+ "\n");
+			w.append(c.getAccountName()).append(" N° ").append(c.getAccountNumber()).append(";;;;Solde initial;")
+					.append(c.getInitialBalance().toString()).append("\n");
 
 			if (!c.getLines().isEmpty()) {
 				w.append("Date;Date valeur;Libellé;Débit;Crédit; \n");
 			}
 			for (AccountLine l : c.getLines()) {
-				w.append(l.getBeginDate() + ";" + l.getValueDate() + ";" + l.getLabel() + " " + l.getLabel2() + ";"
-						+ l.getDebit() + ";" + l.getCredit() + ";;" + Organizer.getInstance().lineType(l) + "\n");
+				w.append(l.getBeginDate()).append(";").append(l.getValueDate()).append(";").append(l.getLabel())
+						.append(" ").append(l.getLabel2()).append(";").append(l.getDebit()).append(";")
+						.append(l.getCredit()).append(";;").append(Organizer.getInstance().lineType(l)).append("\n");
 			}
-			w.append(";;;;Solde final;" + c.getFinalBalance() + "\n");
+			w.append(";;;;Solde final;").append(c.getFinalBalance().toString()).append("\n");
 
 			w.append("\n");
 		}
 		w.close();
 	}
-
 }

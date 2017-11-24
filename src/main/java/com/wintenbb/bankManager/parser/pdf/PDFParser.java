@@ -1,7 +1,6 @@
 package com.wintenbb.bankManager.parser.pdf;
 
-import java.awt.Rectangle;
-import java.io.FileNotFoundException;
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -20,13 +19,13 @@ import com.wintenbb.bankManager.parser.pdf.config.PDFPageConfig;
 import com.wintenbb.bankManager.parser.pdf.config.PDFParserConfig;
 
 public class PDFParser {
-	public static final Pattern SUITE_AU_VERSO = Pattern.compile("(\\s*<<Suite au verso>>)");
-	public static final Pattern ACCOUNT_PATTERN = Pattern.compile("([\\w\\s]+) N° (\\d+)");
-	public static final Pattern LINE_PATTERN = Pattern.compile("^(\\d{2}/\\d{2}/\\d{4}) .*");
-	public static final Pattern SOLDE_NUL_PATTERN = Pattern.compile("SOLDE NUL");
-	public static final Pattern SOLDE_CREDITEUR_PATTERN = Pattern.compile("SOLDE CREDITEUR .*/\\d{4} *([-\\.,\\d]+)");
-	public static final Pattern LINE_COMPLEMENTARY_PATTERN = Pattern.compile(".+");
-	public static final Pattern SITUATION_OTHER_ACCOUNT = Pattern.compile("(\\d{8,12}) *(.*) * EUR *(.*)");
+	private static final Pattern SUITE_AU_VERSO = Pattern.compile("(\\s*<<Suite au verso>>)");
+	private static final Pattern ACCOUNT_PATTERN = Pattern.compile("([\\w\\s]+) N° (\\d+)");
+	private static final Pattern LINE_PATTERN = Pattern.compile("^(\\d{2}/\\d{2}/\\d{4}) .*");
+	private static final Pattern SOLDE_NUL_PATTERN = Pattern.compile("SOLDE NUL");
+	private static final Pattern SOLDE_CREDITEUR_PATTERN = Pattern.compile("SOLDE CREDITEUR .*/\\d{4} *([-\\.,\\d]+)");
+	private static final Pattern LINE_COMPLEMENTARY_PATTERN = Pattern.compile(".+");
+	private static final Pattern SITUATION_OTHER_ACCOUNT = Pattern.compile("(\\d{8,12}) *(.*) * EUR *(.*)");
 
 	private PDFParserConfig parserConf;
 	private PDDocument doc;
@@ -44,14 +43,16 @@ public class PDFParser {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param file
-	 * @param date
-	 * @throws FileNotFoundException
+	 *
+	 * @param is
+	 *            inputStream
+	 * @param parserConf
+	 *            configuration
 	 * @throws IOException
+	 *             when an error occurred reading account file
 	 */
 	@SuppressWarnings("unchecked")
-	public PDFParser(InputStream is, PDFParserConfig parserConf) throws FileNotFoundException, IOException {
+	public PDFParser(InputStream is, PDFParserConfig parserConf) throws IOException {
 		org.apache.pdfbox.pdfparser.PDFParser parser = new org.apache.pdfbox.pdfparser.PDFParser(is);
 		parser.parse();
 		doc = parser.getPDDocument();
@@ -66,7 +67,7 @@ public class PDFParser {
 		try {
 			AccountsStatement extrait = new AccountsStatement();
 			Account currAccount = null;
-			String currentAccountName = null;
+			String currentAccountName;
 			boolean lastReadWasLine = false;
 			boolean suiteAuVerso = false;
 			while (!finished) {
@@ -77,7 +78,6 @@ public class PDFParser {
 				if (finished) {
 					break;
 				}
-				// System.out.println("->" + lastLine);
 
 				Matcher m;
 				if ((m = ACCOUNT_PATTERN.matcher(lastLine)).find()) {
@@ -99,7 +99,7 @@ public class PDFParser {
 					} else {
 						lastReadWasLine = false;
 					}
-				} else if ((m = SUITE_AU_VERSO.matcher(lastLine)).find()) {
+				} else if (SUITE_AU_VERSO.matcher(lastLine).find()) {
 					nextPage();
 					suiteAuVerso = true;
 				} else if ((m = SOLDE_CREDITEUR_PATTERN.matcher(lastLine)).find()) {
@@ -110,7 +110,7 @@ public class PDFParser {
 						currAccount.setFinalBalance(new BigDecimal(m.group(1).replaceAll("\\.", "").replace(",", ".")));
 					}
 					lastReadWasLine = false;
-				} else if ((m = SOLDE_NUL_PATTERN.matcher(lastLine)).find()) {
+				} else if (SOLDE_NUL_PATTERN.matcher(lastLine).find()) {
 					if (currAccount.getInitialBalance() == null) {
 						currAccount.setInitialBalance(BigDecimal.ZERO);
 					} else {
@@ -130,7 +130,7 @@ public class PDFParser {
 					currAccount.setInitialBalance(solde);
 					currAccount.setFinalBalance(solde);
 					lastReadWasLine = false;
-				} else if ((m = LINE_PATTERN.matcher(lastLine)).find()) {
+				} else if (LINE_PATTERN.matcher(lastLine).find()) {
 					currAccount.addLine(parseLine());
 					lastReadWasLine = true;
 				} else if ((m = LINE_COMPLEMENTARY_PATTERN.matcher(lastLine)).find() && lastReadWasLine) {
